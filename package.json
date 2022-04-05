@@ -4,7 +4,8 @@
   "description": "my first bot",
   "main": "bot.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node bot"
   },
   "author": "alex gridy",
   "license": "ISC",

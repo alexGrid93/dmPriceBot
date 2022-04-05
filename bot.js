@@ -3,7 +3,7 @@ const cheerio = require("cheerio");
 const { Telegraf } = require("telegraf");
 const { setIntervalAsync } = require("set-interval-async/dynamic");
 
-const telegramBotToken = "5140708625:AAF8dUandVCzlliNXX2ShDZr5TQpKN8_vtw";
+const telegramBotToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(telegramBotToken); //сюда помещается токен, который дал botFather
 
 const getGoodInfo = (url) =>
@@ -44,7 +44,9 @@ bot.on("text", async (ctx) => {
     if (newGoodInfo.price === currentPrice) {
       ctx.replyWithMarkdown(`*Цена на ${newGoodInfo.title} не изменилась*`);
     } else {
-      ctx.replyWithMarkdown(`*Цена изменилась! Ссылка: ${'https://detmir.ru/product/index/id/3187781/'}*`);
+      ctx.replyWithMarkdown(
+        `*Цена изменилась! Ссылка: ${"https://detmir.ru/product/index/id/3187781/"}*`
+      );
     }
   }, 4000);
 });
