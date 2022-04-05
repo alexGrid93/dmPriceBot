@@ -4,6 +4,8 @@ require("dotenv").config();
 const { Telegraf } = require("telegraf");
 const { setIntervalAsync } = require("set-interval-async/dynamic");
 
+const delay = 7200000;
+
 const telegramBotToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(telegramBotToken); //сюда помещается токен, который дал botFather
 
@@ -49,7 +51,7 @@ bot.on("text", async (ctx) => {
         `*Цена изменилась! Ссылка: ${"https://detmir.ru/product/index/id/3187781/"}*`
       );
     }
-  }, 4000);
+  }, delay);
 });
 
 bot.command("/an", (ctx) => {
