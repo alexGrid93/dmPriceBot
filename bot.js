@@ -1,5 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+require("dotenv").config();
 const { Telegraf } = require("telegraf");
 const { setIntervalAsync } = require("set-interval-async/dynamic");
 
