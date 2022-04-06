@@ -4,7 +4,7 @@ require("dotenv").config();
 const { Telegraf } = require("telegraf");
 const { setIntervalAsync } = require("set-interval-async/dynamic");
 
-const delay = 7200000;
+const delay = 10000000;
 
 const telegramBotToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(telegramBotToken); //сюда помещается токен, который дал botFather
@@ -27,52 +27,54 @@ const getData = (html) => {
   return good;
 };
 
-const firstMessage = (title, price) => `🔍 ${title}
+const firstMessage = (title, price) => `🔍 ${title} — *${price}*
   
-💸 *${price}*
-
-Мы будем каждый час мониторить цену по этой позиции. Если цена изменится, вы получите уведомление`;
+`;
 
 bot.start((ctx) => ctx.reply("Введите ссылку на страницу"));
 
 bot.on("text", async (ctx) => {
-  const url = ctx.message.text;
-  const good = await getGoodInfo(url).then((el) => getData(el));
-  ctx.replyWithMarkdown(firstMessage(good.title, good.price));
-  const currentPrice = good.price;
+  const urls = ctx.message.text.split(" ");
+
+  const goods = await Promise.all(
+    urls.map(async (url) => {
+      const good = await getGoodInfo(url).then((el) => getData(el));
+      return good;
+    })
+  );
+
+  const message = goods.reduce((acc, { title, price }) => {
+    const m = firstMessage(title, price);
+
+    return acc + m;
+  }, "");
+
+  ctx.replyWithMarkdown(
+    message +
+      "Мы будем каждый час мониторить цену по этим позициям. Если цена изменится, вы получите уведомление"
+  );
+
+  const currentPrices = goods.map(({ price }) => price);
 
   setIntervalAsync(async () => {
-    const newGoodInfo = await getGoodInfo(url).then((el) => getData(el));
+    const newGoodsInfo = await Promise.all(
+      urls.map(async (url) => {
+        const good = await getGoodInfo(url).then((el) => getData(el));
+        return good;
+      })
+    );
 
-    if (newGoodInfo.price === currentPrice) {
-      ctx.replyWithMarkdown(`*Цена на ${newGoodInfo.title} не изменилась*`);
-    } else {
-      ctx.replyWithMarkdown(
-        `*Цена изменилась! Ссылка: ${"https://detmir.ru/product/index/id/3187781/"}*`
-      );
-    }
+    newGoodsInfo.forEach(({ title, price }, index) => {
+      if (price === currentPrices[index]) {
+        ctx.replyWithMarkdown(`Цена на *${title}* не изменилась. `);
+      } else {
+        ctx.replyWithMarkdown(
+          `🧡🧡🧡 Цена на *${title}* изменилась! Ссылка: ${urls[index]}`
+        );
+        currentPrices[index] = price;
+      }
+    });
   }, delay);
-});
-
-bot.command("/an", (ctx) => {
-  let animalMessage = `great, here are pictures of animals you would love`;
-  ctx.deleteMessage();
-  bot.telegram.sendMessage(ctx.chat.id, animalMessage, {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: "dog",
-            callback_data: "dog",
-          },
-          {
-            text: "cat",
-            callback_data: "cat",
-          },
-        ],
-      ],
-    },
-  });
 });
 
 bot.launch(); // запуск бота
