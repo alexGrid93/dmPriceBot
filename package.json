@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "test": "test",
-    "start": "node bot"
+    "start": "node index"
   },
   "author": "alex gridy",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "axios": "^0.26.1",
     "cheerio": "^1.0.0-rc.10",
     "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15",
     "set-interval-async": "^2.0.3",
     "telegraf": "^4.7.0"
   }
