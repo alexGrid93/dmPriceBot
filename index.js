@@ -8,7 +8,7 @@ import {
   allGoodsMessage,
 } from "./utils.js";
 
-const delay = 100000;
+const delay = 7200000;
 const allGoods = [];
 
 const telegramBotToken = process.env.BOT_TOKEN;
