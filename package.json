@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "my first bot",
   "main": "bot.js",
+  "type": "module",
   "scripts": {
     "test": "test",
     "start": "node index"
